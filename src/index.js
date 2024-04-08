@@ -45,48 +45,83 @@ function Tree(arr){
       root,
       insert: function(value) {
         //we only insert as a 'leaf' of the tree 
-
         //WE NEVER RE-ARRANGE
 
-        //compare new value to the root ('data' property of Node)
-        //repeat steps recurisevly:
-        //if it's smaller, it goes to the left sub-tree
-        //if there is no left sub-tree, make new value the new root
-        //if it's bigger than the root, it goes to the right sub-tree
-        //repeat above steps for right side
-        if (root.data !== null) {
-          let subtree;
+        let subtree;
+
+        //return if value is a duplicate
+        if (value === root.data) return;
 
           //we check which subtree we'll go to first
-            if (value === root.data) return;
-            if (value < root.data) {
-              subtree = root.leftChild;
-            } else {
-              subtree = root.rightChild;
-            }
+        if (value < root.data) {
+          subtree = root.leftChild;
+        } else {
+          subtree = root.rightChild;
+        };
 
-            //loops until one of the subtrees is null
-            //since this is a balanced BST
-            while (subtree.leftChild != null && subtree.rightChild != null) {
+          //loops until one of the subtrees is null
+        while (subtree.leftChild != null && subtree.rightChild != null) {
 
-                if (value === subtree.leftChild.data || value === subtree.rightChild.data) return;
-                if (value < subtree.data) {
-                  subtree = subtree.leftChild
-                } else {
-                  subtree = subtree.rightChild
-                }
+          //return if value is a duplicate
+          if (value === subtree.leftChild.data || value === subtree.rightChild.data) return;
 
-            }
-          //determine if the value should be added to the left subtree
-          //or right subtree if no subtree exists
-          let node = Node(value, null, null);
-          if (subtree.leftChild === null) {
-            subtree.leftChild = node;
+          if (value < subtree.data) {
+            subtree = subtree.leftChild;
           } else {
-            subtree.rightChild = node;
+            subtree = subtree.rightChild;
+          };
+
           }
+        //determine if the value should be added to the left subtree
+        //or right subtree 
+        let node = Node(value, null, null);
+
+        if (subtree.leftChild === null) {
+          subtree.leftChild = node;
+        } else {
+          subtree.rightChild = node;
+        };
+      },
+      delete: function(value) {
+        //multiple cases:
+        //1) when the leaf doesn't have any children (subtrees)
+          //[assign it to null]
+        //2) delete a leaf with single child
+          //[copy the child and replace the root with it]
+        //3) when a leaf has both children
+          //[replace it with the left one and delete it, the tree will be rebalanced with the rebalance function]
+
+        //find the requested node
+        let subtree;
+        //decide if we should go to the left subtree or right subtree
+        if (value < root.data) {
+          subtree = root.leftChild;
+        } else {
+          subtree = root.rightChild;
+        };
+
+        //move through the tree until the current node is the
+        //node we're search for
+        while (value !== subtree.data) {
+
+          if (subtree.leftChild && value === subtree.leftChild.data) {
+            break;
+        } else if (subtree.rightChild && value === subtree.rightChild.data) {
+            break;
         }
 
+          if (value < subtree.data) {
+            subtree = subtree.leftChild;
+          } else {
+            subtree = subtree.rightChild;
+          }
+        };
+        console.log(subtree)
+        if (subtree.leftChild &&(value === subtree.leftChild.data && (!subtree.leftChild.leftChild && !subtree.leftChild.rightChild))) {
+          subtree.leftChild = null;
+        } else if (subtree.rightChild && (value === subtree.rightChild.data && (!subtree.rightChild.leftChild && !subtree.rightChild.rightChild))) {
+          subtree.rightChild = null;
+        }
       }
     }
 };
@@ -173,12 +208,8 @@ console.log(numbersArr)
 
 
 let idek = Tree(numbersArr);
-idek.insert(2)
-idek.insert(100)
-idek.insert(200)
-// idek.insert(300)
-// idek.insert(4)
-console.log(idek)
+idek.delete(23)
+idek.delete(200)
+idek.delete(6345)
+// idek.delete(9)
 console.log(idek.root)
-// idek.buildTree(numbersArr, 0, numbersArr.length - 1);
-// console.log(idek.root(numbersArr, 0, numbersArr.length - 1))
