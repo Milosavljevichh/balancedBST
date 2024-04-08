@@ -56,11 +56,20 @@ function Tree(arr){
         //repeat above steps for right side
         if (root.data !== null) {
           let subtree;
-            subtree = root.leftChild;
+
+          //we check which subtree we'll go to first
+            if (value === root.data) return;
+            if (value < root.data) {
+              subtree = root.leftChild;
+            } else {
+              subtree = root.rightChild;
+            }
 
             //loops until one of the subtrees is null
+            //since this is a balanced BST
             while (subtree.leftChild != null && subtree.rightChild != null) {
 
+                if (value === subtree.leftChild.data || value === subtree.rightChild.data) return;
                 if (value < subtree.data) {
                   subtree = subtree.leftChild
                 } else {
@@ -68,9 +77,8 @@ function Tree(arr){
                 }
 
             }
-            console.log(subtree)
           //determine if the value should be added to the left subtree
-          //or right subtree
+          //or right subtree if no subtree exists
           let node = Node(value, null, null);
           if (subtree.leftChild === null) {
             subtree.leftChild = node;
@@ -98,7 +106,7 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   };
 
 
-let numbersArr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
+let numbersArr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324, 100, 200, 300, 400, 500, 600];
 
 
 function merge(leftArray, rightArray, leftLength, rightLength, ks, arrayToSort) {
@@ -165,9 +173,9 @@ console.log(numbersArr)
 
 
 let idek = Tree(numbersArr);
-// idek.insert(3)
-// idek.insert(100)
-// idek.insert(200)
+idek.insert(2)
+idek.insert(100)
+idek.insert(200)
 // idek.insert(300)
 // idek.insert(4)
 console.log(idek)
