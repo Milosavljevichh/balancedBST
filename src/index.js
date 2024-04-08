@@ -93,6 +93,7 @@ function Tree(arr){
 
         //find the requested node
         let subtree;
+
         //decide if we should go to the left subtree or right subtree
         if (value < root.data) {
           subtree = root.leftChild;
@@ -103,7 +104,6 @@ function Tree(arr){
         //move through the tree until the current node is the
         //node we're search for
         while (value !== subtree.data) {
-
           if (subtree.leftChild && value === subtree.leftChild.data) {
             break;
         } else if (subtree.rightChild && value === subtree.rightChild.data) {
@@ -116,11 +116,33 @@ function Tree(arr){
             subtree = subtree.rightChild;
           }
         };
-        console.log(subtree)
+        
+        //checks if a subtree has a leftChild
+        //if it has a left child, it checks if its value is the same as the argument value
+        //then it checks if that child has any children
+        //if it has no children, it's deleted
         if (subtree.leftChild &&(value === subtree.leftChild.data && (!subtree.leftChild.leftChild && !subtree.leftChild.rightChild))) {
           subtree.leftChild = null;
-        } else if (subtree.rightChild && (value === subtree.rightChild.data && (!subtree.rightChild.leftChild && !subtree.rightChild.rightChild))) {
-          subtree.rightChild = null;
+
+        //does the same as above, only for right child
+        } else if (subtree.rightChild) {
+
+            if (value === subtree.rightChild.data) {
+
+              if (!subtree.rightChild.leftChild && !subtree.rightChild.rightChild) {
+                subtree.rightChild = null;
+                return;
+              }
+              
+              if (subtree.rightChild.leftChild || subtree.rightChild.rightChild) {
+                if (subtree.leftChild.leftChild) {
+                  subtree.leftChild = subtree.leftChild.leftChild;
+                } else {
+                  subtree.rightChild = subtree.rightChild.rightChild;
+                }
+              }
+          }
+
         }
       }
     }
@@ -208,8 +230,8 @@ console.log(numbersArr)
 
 
 let idek = Tree(numbersArr);
-idek.delete(23)
+// idek.delete(23)
 idek.delete(200)
 idek.delete(6345)
-// idek.delete(9)
+idek.delete(9)
 console.log(idek.root)
