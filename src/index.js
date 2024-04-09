@@ -89,7 +89,7 @@ function Tree(arr){
         //2) delete a leaf with single child
           //[copy the child and replace the root with it]
         //3) when a leaf has both children
-          //[replace it with the left one and delete it, the tree will be rebalanced with the rebalance function]
+          //[step into its right child and then take its most left child]
 
         //find the requested node
         let subtree;
@@ -118,14 +118,50 @@ function Tree(arr){
         };
         
         //checks if a subtree has a leftChild
-        //if it has a left child, it checks if its value is the same as the argument value
-        //then it checks if that child has any children
-        //if it has no children, it's deleted
-        if (subtree.leftChild &&(value === subtree.leftChild.data && (!subtree.leftChild.leftChild && !subtree.leftChild.rightChild))) {
-          subtree.leftChild = null;
+        if (subtree.leftChild){
+
+          //if it has a left child, it checks if its value is the same as the argument value
+          if (value === subtree.leftChild.data) {
+            
+            //then it checks if that child has any children
+            if (!subtree.leftChild.leftChild && !subtree.leftChild.rightChild) {
+
+              //if it has no children, it's deleted
+              subtree.leftChild = null;
+              return;
+            }
+
+            if (subtree.leftChild.leftChild && subtree.leftChild.rightChild) {
+              console.log(subtree)
+              return;
+            }
+
+            //checks if subtree has either child
+            if (subtree.leftChild.leftChild || subtree.leftChild.rightChild) {
+              if (subtree.leftChild.leftChild) {
+                subtree.leftChild = subtree.leftChild.leftChild;
+              } else {
+                subtree.rightChild = subtree.rightChild.rightChild;
+              }
+            }
+            //if the node we're removing is a direct child of main root
+          } else if (value === subtree.data) {
+
+            //we get its rights child most left child
+            let rightSubtree = subtree.rightChild; // 500
+            let mostLeftChild;
+            while (rightSubtree.leftChild.leftChild != null) {
+              rightSubtree = rightSubtree.leftChild;
+            }
+            mostLeftChild = rightSubtree.leftChild;
+            subtree.data = mostLeftChild.data;
+            rightSubtree.leftChild = null;
+            return;
+          }
+        }
 
         //does the same as above, only for right child
-        } else if (subtree.rightChild) {
+         if (subtree.rightChild) {
 
             if (value === subtree.rightChild.data) {
 
@@ -134,6 +170,11 @@ function Tree(arr){
                 return;
               }
               
+              if (subtree.rightChild.leftChild && subtree.rightChild.rightChild) {
+                return;
+              }
+
+              //checks if subtree has either child
               if (subtree.rightChild.leftChild || subtree.rightChild.rightChild) {
                 if (subtree.leftChild.leftChild) {
                   subtree.leftChild = subtree.leftChild.leftChild;
@@ -141,7 +182,20 @@ function Tree(arr){
                   subtree.rightChild = subtree.rightChild.rightChild;
                 }
               }
+          //if the node we're removing is a direct child of main root
+        } else if (value === subtree.data) {
+
+          //we get its rights child most left child
+          let rightSubtree = subtree.rightChild; // 500
+          let mostLeftChild;
+          while (rightSubtree.leftChild.leftChild != null) {
+            rightSubtree = rightSubtree.leftChild;
           }
+          mostLeftChild = rightSubtree.leftChild;
+          subtree.data = mostLeftChild.data;
+          rightSubtree.leftChild = null;
+          return;
+        }
 
         }
       }
@@ -163,7 +217,7 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   };
 
 
-let numbersArr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324, 100, 200, 300, 400, 500, 600];
+let numbersArr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324, 100, 200, 300, 400, 500, 600, ];
 
 
 function merge(leftArray, rightArray, leftLength, rightLength, ks, arrayToSort) {
@@ -231,7 +285,7 @@ console.log(numbersArr)
 
 let idek = Tree(numbersArr);
 // idek.delete(23)
-idek.delete(200)
+idek.delete(324)
 idek.delete(6345)
 idek.delete(9)
 console.log(idek.root)
