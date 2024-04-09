@@ -97,6 +97,8 @@ function Tree(arr){
         //decide if we should go to the left subtree or right subtree
         if (value < root.data) {
           subtree = root.leftChild;
+        } else if (value === root.data){
+          subtree = root;
         } else {
           subtree = root.rightChild;
         };
@@ -148,13 +150,18 @@ function Tree(arr){
           } else if (value === subtree.data) {
 
             //we get its rights child most left child
-            let rightSubtree = subtree.rightChild; // 500
+            let rightSubtree = subtree.rightChild; 
             let mostLeftChild;
             while (rightSubtree.leftChild.leftChild != null) {
               rightSubtree = rightSubtree.leftChild;
             }
+            //we set the most left child
             mostLeftChild = rightSubtree.leftChild;
+
+            //we replace the value
             subtree.data = mostLeftChild.data;
+
+            //we remove the most left child
             rightSubtree.leftChild = null;
             return;
           }
@@ -187,11 +194,12 @@ function Tree(arr){
 
           //we get its rights child most left child
           let rightSubtree = subtree.rightChild; // 500
-          let mostLeftChild;
-          while (rightSubtree.leftChild.leftChild != null) {
-            rightSubtree = rightSubtree.leftChild;
+          let mostLeftChild = rightSubtree;
+
+          while (mostLeftChild.leftChild != null) {
+            mostLeftChild = mostLeftChild.leftChild;
           }
-          mostLeftChild = rightSubtree.leftChild;
+          
           subtree.data = mostLeftChild.data;
           rightSubtree.leftChild = null;
           return;
@@ -285,7 +293,7 @@ console.log(numbersArr)
 
 let idek = Tree(numbersArr);
 // idek.delete(23)
-idek.delete(324)
+idek.delete(67)
 idek.delete(6345)
 idek.delete(9)
 console.log(idek.root)
