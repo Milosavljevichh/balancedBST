@@ -83,129 +83,79 @@ function Tree(arr){
         };
       },
       delete: function(value) {
-        //multiple cases:
-        //1) when the leaf doesn't have any children (subtrees)
-          //[assign it to null]
-        //2) delete a leaf with single child
-          //[copy the child and replace the root with it]
-        //3) when a leaf has both children
-          //[step into its right child and then take its most left child]
+       let removableVar = root;
+       let parentNode;
 
-        //find the requested node
-        let subtree;
+       //we loop through the tree until we find our value
+       while (removableVar.data !== value) {
 
-        //decide if we should go to the left subtree or right subtree
-        if (value < root.data) {
-          subtree = root.leftChild;
-        } else if (value === root.data){
-          subtree = root;
+        //LOOP THROUGH THE TREE UNTIL WE FIND THE VALUE
+        //we keep the parent stored, so that later we can remove the node
+        parentNode = removableVar;
+        //if nodes value is smaller than searched value, go left
+        if (removableVar.data > value) {
+          removableVar = removableVar.leftChild;
         } else {
-          subtree = root.rightChild;
+          //else, go right
+          removableVar = removableVar.rightChild;
         };
+       };
 
-        //move through the tree until the current node is the
-        //node we're search for
-        while (value !== subtree.data) {
-          if (subtree.leftChild && value === subtree.leftChild.data) {
-            break;
-        } else if (subtree.rightChild && value === subtree.rightChild.data) {
-            break;
-        }
+       //REMOVE CASES FOR LEFT CHILD
+       //check if left node isnt null
+       if (parentNode.leftChild !== null) {
+         if (parentNode.leftChild.data === value) {
 
-          if (value < subtree.data) {
-            subtree = subtree.leftChild;
-          } else {
-            subtree = subtree.rightChild;
-          }
-        };
-        
-        //checks if a subtree has a leftChild
-        if (subtree.leftChild){
-
-          //if it has a left child, it checks if its value is the same as the argument value
-          if (value === subtree.leftChild.data) {
-            
-            //then it checks if that child has any children
-            if (!subtree.leftChild.leftChild && !subtree.leftChild.rightChild) {
-
-              //if it has no children, it's deleted
-              subtree.leftChild = null;
-              return;
-            }
-
-            if (subtree.leftChild.leftChild && subtree.leftChild.rightChild) {
-              console.log(subtree)
-              return;
-            }
-
-            //checks if subtree has either child
-            if (subtree.leftChild.leftChild || subtree.leftChild.rightChild) {
-              if (subtree.leftChild.leftChild) {
-                subtree.leftChild = subtree.leftChild.leftChild;
-              } else {
-                subtree.rightChild = subtree.rightChild.rightChild;
-              }
-            }
-            //if the node we're removing is a direct child of main root
-          } else if (value === subtree.data) {
-
-            //we get its rights child most left child
-            let rightSubtree = subtree.rightChild; 
-            let mostLeftChild;
-            while (rightSubtree.leftChild.leftChild != null) {
-              rightSubtree = rightSubtree.leftChild;
-            }
-            //we set the most left child
-            mostLeftChild = rightSubtree.leftChild;
-
-            //we replace the value
-            subtree.data = mostLeftChild.data;
-
-            //we remove the most left child
-            rightSubtree.leftChild = null;
+          //we check if both children are null
+          if (removableVar.leftChild === null && removableVar.rightChild === null) {
+            parentNode.leftChild = null;
             return;
+          };
+
+          //we check if a node has ONLY one child
+          if ((removableVar.leftChild && !removableVar.rightChild) || (!removableVar.leftChild && removableVar.rightChild)){
+
+            let savedChild;
+            //we check whether it has a right or a left child
+            if (removableVar.leftChild) {
+              savedChild = removableVar.leftChild;
+              parentNode.leftChild = savedChild;
+            } else {
+              savedChild = removableVar.rightChild;
+              parentNode.leftChild = savedChild;
+            }
           }
-        }
 
-        //does the same as above, only for right child
-         if (subtree.rightChild) {
+         } 
+       }
 
-            if (value === subtree.rightChild.data) {
-
-              if (!subtree.rightChild.leftChild && !subtree.rightChild.rightChild) {
-                subtree.rightChild = null;
-                return;
-              }
-              
-              if (subtree.rightChild.leftChild && subtree.rightChild.rightChild) {
-                return;
-              }
-
-              //checks if subtree has either child
-              if (subtree.rightChild.leftChild || subtree.rightChild.rightChild) {
-                if (subtree.leftChild.leftChild) {
-                  subtree.leftChild = subtree.leftChild.leftChild;
-                } else {
-                  subtree.rightChild = subtree.rightChild.rightChild;
-                }
-              }
-          //if the node we're removing is a direct child of main root
-        } else if (value === subtree.data) {
-
-          //we get its rights child most left child
-          let rightSubtree = subtree.rightChild; // 500
-          let mostLeftChild = rightSubtree;
-
-          while (mostLeftChild.leftChild != null) {
-            mostLeftChild = mostLeftChild.leftChild;
-          }
+       //REMOVE CASES FOR RIGHT CHILD
+       //check if right node isnt null
+       if (parentNode.rightChild !== null) {
+        if (parentNode.rightChild.data === value) {
           
-          subtree.data = mostLeftChild.data;
-          rightSubtree.leftChild = null;
-          return;
-        }
+          //we check if both children are null
+          if (parentNode.rightChild.leftChild === null && parentNode.rightChild.rightChild === null) {
+            parentNode.rightChild = null;
+            return;
+          };
+
+          //we check if a node has ONLY one child
+          if ((removableVar.leftChild && !removableVar.rightChild) || (!removableVar.leftChild && removableVar.rightChild)){
+
+            let savedChild;
+            //we check whether it has a right or a left child
+            if (removableVar.leftChild) {
+              savedChild = removableVar.leftChild;
+              parentNode.rightChild = savedChild;
+            } else {
+              savedChild = removableVar.rightChild;
+              parentNode.rightChild = savedChild;
+            }
+          }
 
         }
+       }
       }
     }
 };
@@ -293,7 +243,9 @@ console.log(numbersArr)
 
 let idek = Tree(numbersArr);
 // idek.delete(23)
-idek.delete(67)
-idek.delete(6345)
+// idek.delete(5)
+// idek.delete(6345)
 idek.delete(9)
+idek.delete(300)
+idek.delete(200)
 console.log(idek.root)
