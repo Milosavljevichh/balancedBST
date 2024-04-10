@@ -105,13 +105,15 @@ function Tree(arr){
        //check if left node isnt null
        if (parentNode.leftChild !== null) {
          if (parentNode.leftChild.data === value) {
-
+         
+          //CASE 1
           //we check if both children are null
           if (removableVar.leftChild === null && removableVar.rightChild === null) {
             parentNode.leftChild = null;
             return;
           };
 
+          //CASE 2
           //we check if a node has ONLY one child
           if ((removableVar.leftChild && !removableVar.rightChild) || (!removableVar.leftChild && removableVar.rightChild)){
 
@@ -120,11 +122,46 @@ function Tree(arr){
             if (removableVar.leftChild) {
               savedChild = removableVar.leftChild;
               parentNode.leftChild = savedChild;
+              return;
             } else {
               savedChild = removableVar.rightChild;
               parentNode.leftChild = savedChild;
+              return;
             }
           }
+
+          //CASE3
+          //if node has 2 children, we find the most left child of its right subtree
+          let mostLeftNode = removableVar.rightChild;
+          let mostLeftParent;
+
+          //if the right subtree has no left child
+          //we get the right subtrees parent
+          //we set the removable element to that right subtrees value
+          //we delete that right subtree node
+          if (!mostLeftNode.leftChild) {
+            mostLeftParent = removableVar;
+            //if it has no left and no right child
+            if (!mostLeftNode.rightChild) {
+              parentNode.leftChild.data = mostLeftNode.data;
+              mostLeftParent.rightChild = null;
+              return;
+              //else if it has a right child
+            } else {
+              mostLeftParent.rightChild.data = mostLeftNode.rightChild.data;
+              mostLeftNode.rightChild = null;
+              parentNode.leftChild.data  = mostLeftNode.data;
+              return;
+            }
+          }
+
+          while (mostLeftNode.leftChild !== null) {
+            mostLeftParent = mostLeftNode;
+            mostLeftNode = mostLeftNode.leftChild;
+          };
+          //after we find the most left node, we have tis parent so that we can delete it
+          parentNode.leftChild.data = mostLeftNode.data;
+          mostLeftParent.leftChild = null;
 
          } 
        }
@@ -134,12 +171,14 @@ function Tree(arr){
        if (parentNode.rightChild !== null) {
         if (parentNode.rightChild.data === value) {
           
+          //CASE 1
           //we check if both children are null
           if (parentNode.rightChild.leftChild === null && parentNode.rightChild.rightChild === null) {
             parentNode.rightChild = null;
             return;
           };
 
+          //CASE 2
           //we check if a node has ONLY one child
           if ((removableVar.leftChild && !removableVar.rightChild) || (!removableVar.leftChild && removableVar.rightChild)){
 
@@ -148,11 +187,46 @@ function Tree(arr){
             if (removableVar.leftChild) {
               savedChild = removableVar.leftChild;
               parentNode.rightChild = savedChild;
+              return;
             } else {
               savedChild = removableVar.rightChild;
               parentNode.rightChild = savedChild;
+              return;
             }
           }
+
+          //CASE3
+          //if node has 2 children, we find the most left child of its right subtree
+          let mostLeftNode = removableVar.rightChild;
+          let mostLeftParent;
+          
+          //if the right subtree has no left child
+          //we get the right subtrees parent
+          //we set the removable element to that right subtrees value
+          //we delete that right subtree node
+          if (!mostLeftNode.leftChild) {
+            mostLeftParent = removableVar;
+            //if it has no left and no right child
+            if (!mostLeftNode.rightChild) {
+              parentNode.rightChild.data = mostLeftNode.data;
+              mostLeftParent.rightChild = null;
+              return;
+              //else if it has a right child
+            } else {
+              parentNode.rightChild.data  = mostLeftNode.data;
+              removableVar.rightChild.data = mostLeftNode.rightChild.data;
+              mostLeftNode.rightChild = null;
+              return;
+            }
+          }
+
+          while (mostLeftNode.leftChild !== null) {
+            mostLeftParent = mostLeftNode;
+            mostLeftNode = mostLeftNode.leftChild;
+          };
+          //after we find the most left node, we have tis parent so that we can delete it
+          parentNode.rightChild.data = mostLeftNode.data;
+          mostLeftParent.leftChild = null;
 
         }
        }
@@ -245,7 +319,5 @@ let idek = Tree(numbersArr);
 // idek.delete(23)
 // idek.delete(5)
 // idek.delete(6345)
-idek.delete(9)
-idek.delete(300)
-idek.delete(200)
+idek.delete(3)
 console.log(idek.root)
