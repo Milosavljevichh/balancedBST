@@ -230,6 +230,19 @@ function Tree(arr){
 
         }
        }
+      },
+      find(value) {
+        let currentNode = root;
+
+        while (currentNode.data !== value) {
+          if (value > currentNode.data) {
+            currentNode = currentNode.rightChild;
+          } else {
+            currentNode = currentNode.leftChild;
+          }
+        };
+
+        return currentNode;
       }
     }
 };
@@ -316,8 +329,6 @@ console.log(numbersArr)
 
 
 let idek = Tree(numbersArr);
-// idek.delete(23)
-// idek.delete(5)
-// idek.delete(6345)
-idek.delete(3)
 console.log(idek.root)
+idek.delete(500)
+console.log(idek.find(400))
