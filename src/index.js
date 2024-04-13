@@ -305,6 +305,55 @@ function Tree(arr){
 
         if (callback) return callback.values;
         return defaultArr;
+      },
+      inOrder: function(callback) {
+        let defaultArr = [];
+        let stack = [];
+        if (!root) return;
+
+        let node = root.leftChild;
+
+        while (node !== null) {
+          stack.push(node);
+          node = node.leftChild;
+        };
+
+        while(stack.length !== 0) {
+          node = stack.pop();
+          defaultArr.push(node.data);
+          if (!node.leftChild && !node.rightChild) continue;
+          if (node.rightChild) {
+            stack.push(node.rightChild);
+            if (node.rightChild.leftChild === null)  continue;
+            stack.push(node.rightChild.leftChild);
+            continue;
+          }
+          if (node.leftChild) stack.push(node.leftChild);
+        };
+        defaultArr.push(root.data);
+
+        node = root.rightChild;
+        while (node !== null) {
+          stack.push(node);
+          node = node.leftChild;
+        };
+
+        
+        while(stack.length !== 0) {
+          node = stack.pop();
+          defaultArr.push(node.data);
+          if (!node.leftChild && !node.rightChild) continue;
+          if (node.rightChild) {
+            stack.push(node.rightChild);
+            if (node.rightChild.leftChild === null)  continue;
+            stack.push(node.rightChild.leftChild);
+            continue;
+          }
+          if (node.leftChild) stack.push(node.leftChild);
+        };
+
+        if (callback) return callback.values;
+        return defaultArr;
       }
       
     }
@@ -394,3 +443,5 @@ console.log(numbersArr)
 let idek = Tree(numbersArr);
 console.log(idek.root)
 console.log(idek.preOrder())
+console.log(idek.preOrder(idek.displayNodes()))
+console.log(idek.inOrder())
