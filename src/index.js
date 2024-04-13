@@ -1,3 +1,4 @@
+
 function Node(data,leftChild, rightChild){
     return {
         data: data,
@@ -231,7 +232,7 @@ function Tree(arr){
         }
        }
       },
-      find(value) {
+      find: function(value) {
         let currentNode = root;
 
         while (currentNode.data !== value) {
@@ -240,10 +241,72 @@ function Tree(arr){
           } else {
             currentNode = currentNode.leftChild;
           }
+          if (currentNode === null) return "Node doesn't exist";
         };
 
         return currentNode;
+      },
+      displayNodes: function(){
+        const values = [];
+        function defaultFunc(node) {
+          node += 1;
+          values.push(node);
+        }
+        return {
+          values, defaultFunc
+        }
+      },
+      levelOrder: function(callback){
+        //Write a levelOrder(callback) function that accepts an optional callback function as its parameter.
+        //The method should return an array of values if no callback is given as an argument.
+
+        //levelOrder should traverse the tree in breadth-first level order and provide each node as an argument to the callback.
+        //As a result, the callback will perform an operation on each node following the order in which they are traversed
+        let defaultArr = [];
+        let queue = [];
+
+        if (!root) return;
+        queue.push(root);
+        while (queue.length !== 0) {
+          let node = queue.shift();
+          //we check if the callback is provided
+          if (callback) {
+            callback.defaultFunc(node.data)
+            //if it isn't provided, we just push the nodes data into our arr
+          } else {
+              defaultArr.push(node.data)
+          }
+          if (node.leftChild !== null) queue.push(node.leftChild);
+          if (node.rightChild !== null) queue.push(node.rightChild);
+        };
+
+        //if theres a callback, return that callbacks array, if not, return defaultArr
+        if (callback) return callback.values;
+        return defaultArr;
+      },
+      preOrder: function( callback) {
+        let defaultArr = [];
+        let stack = [];
+        
+        if (!root) return;
+        stack.push(root);
+        while (stack.length !== 0) {
+          let node = stack.pop();
+
+          if (!callback) {
+            defaultArr.push(node.data);
+          } else {
+            callback.defaultFunc(node.data);
+          }
+
+          if (node.rightChild) stack.push(node.rightChild);
+          if (node.leftChild) stack.push(node.leftChild);
+        }
+
+        if (callback) return callback.values;
+        return defaultArr;
       }
+      
     }
 };
 
@@ -330,5 +393,4 @@ console.log(numbersArr)
 
 let idek = Tree(numbersArr);
 console.log(idek.root)
-idek.delete(500)
-console.log(idek.find(400))
+console.log(idek.preOrder())
