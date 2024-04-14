@@ -419,6 +419,43 @@ function Tree(arr){
 
         if (callback) return callback.values;
         return defaultArr;
+      },
+      height: function(value) {
+        let node;
+        let heightNum = 0;
+
+        if (value < root.data) {
+          node = root.leftChild;
+        } else if (value > root.data) {
+          node = root.rightChild;
+        } else {
+          node = root;
+        };
+
+        while (node.data !== value) {
+          if (value < node.data) {
+            node = node.leftChild;
+          } else {
+            node = node.rightChild;
+          }
+        };
+
+        heightNum++;
+        while (true){
+          if (node.rightChild) {
+            heightNum++;
+            node = node.rightChild;
+            continue;
+          };
+
+          if (node.leftChild) {
+            heightNum++;
+            node = node.leftChild;
+            continue;
+          };
+          break;
+        };
+        return heightNum;
       }
       
     }
@@ -507,8 +544,5 @@ console.log(numbersArr)
 
 let idek = Tree(numbersArr);
 console.log(idek.root)
-console.log(idek.preOrder())
-console.log(idek.preOrder(idek.displayNodes()))
 console.log(idek.inOrder())
 console.log(idek.inOrder(idek.displayNodes()))
-console.log(idek.postOrder())
