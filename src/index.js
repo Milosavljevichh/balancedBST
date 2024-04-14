@@ -320,7 +320,42 @@ function Tree(arr){
 
         while(stack.length !== 0) {
           node = stack.pop();
-          defaultArr.push(node.data);
+          if (!callback) {
+            defaultArr.push(node.data);
+          } else {
+            callback.defaultFunc(node.data);
+          }
+          if (!node.leftChild && !node.rightChild) continue;
+          if (node.rightChild) {
+            stack.push(node.rightChild);
+            //we do these steps so that same values don't get added over and over again
+            //since we're working with a stack
+            if (node.rightChild.leftChild === null)  continue;
+            stack.push(node.rightChild.leftChild);
+            continue;
+          }
+          if (node.leftChild) stack.push(node.leftChild);
+        };
+        if (!callback) {
+          defaultArr.push(root.data);
+        } else {
+          callback.defaultFunc(root.data);
+        }
+
+        node = root.rightChild;
+        while (node !== null) {
+          stack.push(node);
+          node = node.leftChild;
+        };
+
+        
+        while(stack.length !== 0) {
+          node = stack.pop();
+          if (!callback) {
+            defaultArr.push(node.data);
+          } else {
+            callback.defaultFunc(node.data);
+          }
           if (!node.leftChild && !node.rightChild) continue;
           if (node.rightChild) {
             stack.push(node.rightChild);
@@ -330,9 +365,39 @@ function Tree(arr){
           }
           if (node.leftChild) stack.push(node.leftChild);
         };
+
+        if (callback) return callback.values;
+        return defaultArr;
+      },
+      postOrder: function(callback){
+        let defaultArr = [];
+        let stack = [];
+        if (!root) return;
+
+        let node = root.rightChild;
+
+        while (node !== null) {
+          stack.push(node);
+          node = node.leftChild;
+        };
+
+        while(stack.length !== 0) {
+          node = stack.pop();
+          defaultArr.push(node.data);
+          if (!node.leftChild && !node.rightChild) continue;
+          if (node.rightChild) {
+            stack.push(node.rightChild);
+            //we do these steps so that same values don't get added over and over again
+            //since we're working with a stack
+            if (node.rightChild.leftChild === null)  continue;
+            stack.push(node.rightChild.leftChild);
+            continue;
+          }
+          if (node.leftChild) stack.push(node.leftChild);
+        };
         defaultArr.push(root.data);
 
-        node = root.rightChild;
+        node = root.leftChild;
         while (node !== null) {
           stack.push(node);
           node = node.leftChild;
@@ -445,3 +510,5 @@ console.log(idek.root)
 console.log(idek.preOrder())
 console.log(idek.preOrder(idek.displayNodes()))
 console.log(idek.inOrder())
+console.log(idek.inOrder(idek.displayNodes()))
+console.log(idek.postOrder())
