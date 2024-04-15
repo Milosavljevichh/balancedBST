@@ -369,55 +369,20 @@ function Tree(arr){
         if (callback) return callback.values;
         return defaultArr;
       },
-      postOrder: function(callback){
+      postOrder: function(passedNode, callback){
+        let node
+        if (!passedNode) {
+          node = root;
+        } else {
+          node = passedNode;
+        }
         let defaultArr = [];
-        let stack = [];
-        if (!root) return;
 
-        let node = root.rightChild;
+        if (node === null) return;
+        if (node.leftChild) defaultArr = defaultArr.concat(this.postOrder(node.leftChild));
+        if (node.rightChild) defaultArr = defaultArr.concat(this.postOrder(node.rightChild));
+        defaultArr.push(node.data);
 
-        while (node !== null) {
-          stack.push(node);
-          node = node.leftChild;
-        };
-
-        while(stack.length !== 0) {
-          node = stack.pop();
-          defaultArr.push(node.data);
-          if (!node.leftChild && !node.rightChild) continue;
-          if (node.rightChild) {
-            stack.push(node.rightChild);
-            //we do these steps so that same values don't get added over and over again
-            //since we're working with a stack
-            if (node.rightChild.leftChild === null)  continue;
-            stack.push(node.rightChild.leftChild);
-            continue;
-          }
-          if (node.leftChild) stack.push(node.leftChild);
-        };
-        defaultArr.push(root.data);
-
-        node = root.leftChild;
-        while (node !== null) {
-          stack.push(node);
-          node = node.leftChild;
-        };
-
-        
-        while(stack.length !== 0) {
-          node = stack.pop();
-          defaultArr.push(node.data);
-          if (!node.leftChild && !node.rightChild) continue;
-          if (node.rightChild) {
-            stack.push(node.rightChild);
-            if (node.rightChild.leftChild === null)  continue;
-            stack.push(node.rightChild.leftChild);
-            continue;
-          }
-          if (node.leftChild) stack.push(node.leftChild);
-        };
-
-        if (callback) return callback.values;
         return defaultArr;
       },
       height: function(value) {
@@ -568,6 +533,6 @@ console.log(numbersArr)
 
 let idek = Tree(numbersArr);
 console.log(idek.root)
-console.log(idek.inOrder())
+console.log(idek.postOrder())
 // console.log(idek.inOrder(idek.displayNodes()))
 console.log(idek.depth(324))
