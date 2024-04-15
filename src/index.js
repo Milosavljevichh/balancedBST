@@ -21,16 +21,8 @@ function Tree(arr){
 
     //finds the middle element of the left half of the array and sets it as root
     let leftChild = buildTree(arr, start, mid-1);
-    // console.log(leftChild)
-    // if (leftChild !== null && leftChild.data === root) {
-    //   // let tempNode = leftChild.rightChild;
-    //   // leftChild = leftChild.leftChild;
-    //   // leftChild.rightChild = tempNode;
-
-    // };
     //does the same for the right half of the array
     let rightChild = buildTree(arr, mid+1, end);
-    // if (rightChild.data === root) {rightChild = rightChild.leftChild};
     let node = Node(root, leftChild, rightChild);
 
     //prints out a visual representation of the tree
@@ -61,10 +53,10 @@ function Tree(arr){
         };
 
           //loops until one of the subtrees is null
-        while (subtree.leftChild != null && subtree.rightChild != null) {
+        while (subtree.leftChild != null || subtree.rightChild != null) {
 
           //return if value is a duplicate
-          if (value === subtree.leftChild.data || value === subtree.rightChild.data) return;
+          if (value === subtree.data) return;
 
           if (value < subtree.data) {
             subtree = subtree.leftChild;
@@ -77,7 +69,7 @@ function Tree(arr){
         //or right subtree 
         let node = Node(value, null, null);
 
-        if (subtree.leftChild === null) {
+        if (value < subtree.data) {
           subtree.leftChild = node;
         } else {
           subtree.rightChild = node;
@@ -381,7 +373,7 @@ function Tree(arr){
         if (node === null) return;
         if (node.leftChild) defaultArr = defaultArr.concat(this.postOrder(node.leftChild, callback));
         if (node.rightChild) defaultArr = defaultArr.concat(this.postOrder(node.rightChild, callback));
-        
+
         if (!callback) {defaultArr.push(node.data);}
         else {callback.defaultFunc(node.data)}
 
@@ -408,7 +400,6 @@ function Tree(arr){
           }
         };
 
-        heightNum++;
         while (true){
           if (node.rightChild) {
             heightNum++;
@@ -448,6 +439,36 @@ function Tree(arr){
         };
 
         return depthNum;
+      }, 
+      isBalanced: function(node) {
+        //is balanced if height of left subtree and right subtree is not more than 1
+        //the leaf nodes dont have any children
+
+        let balanced = true;
+        let h1 = 0;
+        let h2 = 0;
+
+        if (node === null) return balanced;
+
+        if (node.leftChild) {
+          h1 = this.height(node.leftChild.data);
+        };
+
+        if (node.rightChild) {
+          h2 = this.height(node.rightChild.data);
+        };
+
+        if ((h2-h1>1) || (h1-h2>1)) {
+          balanced = false;
+          return balanced;
+        }
+
+        balanced = this.isBalanced(node.leftChild);
+        if (balanced === false) return balanced;
+        balanced = this.isBalanced(node.rightChild);
+        if (balanced === false) return balanced;
+
+        return balanced;
       }
       
     }
@@ -535,8 +556,9 @@ console.log(numbersArr)
 
 
 let idek = Tree(numbersArr);
-console.log(idek.root)
 console.log(idek.postOrder())
-console.log(idek.postOrder(null, idek.displayNodes()))
-// console.log(idek.inOrder(idek.displayNodes()))
-console.log(idek.depth(324))
+console.log(idek.inOrder())
+idek.delete(200)
+idek.delete(100)
+console.log(idek.root)
+console.log(idek.isBalanced(idek.root))
