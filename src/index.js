@@ -35,7 +35,6 @@ function Tree(arr){
   let root = buildTree(arr, 0, arr.length - 1)
   
     return{
-      root,
       insert: function(value) {
         //we only insert as a 'leaf' of the tree 
         //WE NEVER RE-ARRANGE
@@ -241,7 +240,7 @@ function Tree(arr){
       displayNodes: function(){
         const values = [];
         function defaultFunc(node) {
-          node += 1;
+          // node += 1;
           values.push(node);
         }
         return {
@@ -440,15 +439,20 @@ function Tree(arr){
 
         return depthNum;
       }, 
-      isBalanced: function(node) {
+      isBalanced: function(passedNode) {
         //is balanced if height of left subtree and right subtree is not more than 1
         //the leaf nodes dont have any children
-
         let balanced = true;
-        let h1 = 0;
-        let h2 = 0;
+        let node
+        if (!passedNode) {
+          node = root;
+        } else {
+          node = passedNode;
+        }
 
         if (node === null) return balanced;
+        let h1 = 0;
+        let h2 = 0;
 
         if (node.leftChild) {
           h1 = this.height(node.leftChild.data);
@@ -463,12 +467,16 @@ function Tree(arr){
           return balanced;
         }
 
-        balanced = this.isBalanced(node.leftChild);
+        if (node.leftChild) balanced = this.isBalanced(node.leftChild);
         if (balanced === false) return balanced;
-        balanced = this.isBalanced(node.rightChild);
+        if (node.rightChild) balanced = this.isBalanced(node.rightChild);
         if (balanced === false) return balanced;
 
         return balanced;
+      },
+      rebalance: function(){
+        let rebalancedTree = this.inOrder(this.displayNodes());
+        root = buildTree(rebalancedTree, 0, rebalancedTree.length - 1);
       }
       
     }
@@ -556,9 +564,8 @@ console.log(numbersArr)
 
 
 let idek = Tree(numbersArr);
-console.log(idek.postOrder())
-console.log(idek.inOrder())
-idek.delete(200)
 idek.delete(100)
-console.log(idek.root)
-console.log(idek.isBalanced(idek.root))
+idek.delete(200)
+console.log(idek.isBalanced())
+idek.rebalance()
+console.log(idek.isBalanced())
