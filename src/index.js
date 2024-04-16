@@ -58,9 +58,11 @@ function Tree(arr){
           if (value === subtree.data) return;
 
           if (value < subtree.data) {
-            subtree = subtree.leftChild;
+            if (subtree.leftChild) subtree = subtree.leftChild;
+            else break
           } else {
-            subtree = subtree.rightChild;
+            if (subtree.rightChild) subtree = subtree.rightChild;
+            else break
           };
 
           }
@@ -297,65 +299,22 @@ function Tree(arr){
         if (callback) return callback.values;
         return defaultArr;
       },
-      inOrder: function(callback) {
-        let defaultArr = [];
-        let stack = [];
-        if (!root) return;
-
-        let node = root.leftChild;
-
-        while (node !== null) {
-          stack.push(node);
-          node = node.leftChild;
-        };
-
-        while(stack.length !== 0) {
-          node = stack.pop();
-          if (!callback) {
-            defaultArr.push(node.data);
-          } else {
-            callback.defaultFunc(node.data);
-          }
-          if (!node.leftChild && !node.rightChild) continue;
-          if (node.rightChild) {
-            stack.push(node.rightChild);
-            //we do these steps so that same values don't get added over and over again
-            //since we're working with a stack
-            if (node.rightChild.leftChild === null)  continue;
-            stack.push(node.rightChild.leftChild);
-            continue;
-          }
-          if (node.leftChild) stack.push(node.leftChild);
-        };
-        if (!callback) {
-          defaultArr.push(root.data);
+      inOrder: function(passedNode, callback) {
+        let node
+        if (!passedNode) {
+          node = root;
         } else {
-          callback.defaultFunc(root.data);
+          node = passedNode;
         }
+        let defaultArr = [];
 
-        node = root.rightChild;
-        while (node !== null) {
-          stack.push(node);
-          node = node.leftChild;
-        };
+        if (node === null) return;
+        if (node.leftChild) defaultArr = defaultArr.concat(this.inOrder(node.leftChild, callback));
 
-        
-        while(stack.length !== 0) {
-          node = stack.pop();
-          if (!callback) {
-            defaultArr.push(node.data);
-          } else {
-            callback.defaultFunc(node.data);
-          }
-          if (!node.leftChild && !node.rightChild) continue;
-          if (node.rightChild) {
-            stack.push(node.rightChild);
-            if (node.rightChild.leftChild === null)  continue;
-            stack.push(node.rightChild.leftChild);
-            continue;
-          }
-          if (node.leftChild) stack.push(node.leftChild);
-        };
+        if (!callback) {defaultArr.push(node.data);}
+        else {callback.defaultFunc(node.data)};
+
+        if (node.rightChild) defaultArr = defaultArr.concat(this.inOrder(node.rightChild, callback));
 
         if (callback) return callback.values;
         return defaultArr;
@@ -391,6 +350,7 @@ function Tree(arr){
           node = root;
         };
 
+        if (node === null) return 0;
         while (node.data !== value) {
           if (value < node.data) {
             node = node.leftChild;
@@ -475,7 +435,7 @@ function Tree(arr){
         return balanced;
       },
       rebalance: function(){
-        let rebalancedTree = this.inOrder(this.displayNodes());
+        let rebalancedTree = this.inOrder(null, this.displayNodes());
         root = buildTree(rebalancedTree, 0, rebalancedTree.length - 1);
       }
       
@@ -558,14 +518,47 @@ function removeDuplicates(arr){
   return filteredArr;
 }
 
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+function randomArrGen() {
+  let arr = [];
+  let i = 0;
+  while (i++ < 25) {
+    arr.push(getRandomInt(100));
+  };
+
+  return arr;
+};
+
+
+//testing
+let randArray1 = randomArrGen();
+
+console.log(randArray1);
+
 mergeSort(0, numbersArr.length-1, numbersArr)
 numbersArr = removeDuplicates(numbersArr)
-console.log(numbersArr)
+
+mergeSort(0, randArray1.length - 1, randArray1);
+randArray1 = removeDuplicates(randArray1);
 
 
-let idek = Tree(numbersArr);
-idek.delete(100)
-idek.delete(200)
-console.log(idek.isBalanced())
-idek.rebalance()
-console.log(idek.isBalanced())
+let test = Tree(randArray1);
+console.log(test.isBalanced());
+console.log(test.levelOrder());
+console.log(test.preOrder());
+console.log(test.inOrder());
+console.log(test.postOrder());
+let i = 0;
+while (i++ < 12) {
+  test.insert((getRandomInt(100) + 101));
+}
+console.log(test.isBalanced());
+test.rebalance();
+console.log(test.isBalanced());
+console.log(test.levelOrder());
+console.log(test.preOrder());
+console.log(test.inOrder());
+console.log(test.postOrder());
